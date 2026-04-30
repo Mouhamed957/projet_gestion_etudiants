@@ -40,6 +40,11 @@ $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit">Ajouter</button>
         </form>
     </div>
+    <?php if (isset($_GET['deleted']) && $_GET['deleted'] == 1): ?>
+        <p style="color: red; font-weight: bold; text-align:center;">
+            Étudiant supprimé avec succès.
+        </p>
+    <?php endif; ?>
     <h2>Liste des étudiants</h2>
     <table>
         <thead>
