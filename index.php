@@ -1,10 +1,14 @@
 <?php
 require_once "connexion.php";
-
-// Récupération des filières
-$stmt = $pdo->query("SELECT * FROM filieres");
-$filieres = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Récupérer les étudiants avec leur filière (jointure)
+$stmt = $pdo->query("
+    SELECT e.id_etudiant, e.nom, e.prenom, f.nom_filiere
+    FROM etudiants e
+    INNER JOIN filieres f ON e.id_filiere = f.id_filiere
+");
+$etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -36,5 +40,30 @@ $filieres = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit">Ajouter</button>
         </form>
     </div>
+    <h2>Liste des étudiants</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Filière</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($etudiants as $etudiant): ?>
+                <tr>
+                    <td><?= htmlspecialchars($etudiant['nom']); ?></td>
+                    <td><?= htmlspecialchars($etudiant['prenom']); ?></td>
+                    <td><?= htmlspecialchars($etudiant['nom_filiere']); ?></td>
+                    <td>
+                        <a href="update.php?id=<?= $etudiant['id_etudiant']; ?>">Modifier</a> |
+                        <a href="delete.php?id=<?= $etudiant['id_etudiant']; ?>" onclick="return confirm('Supprimer cet étudiant ?');">Supprimer</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
 </body>
 </html>
