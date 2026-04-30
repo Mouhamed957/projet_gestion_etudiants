@@ -1,12 +1,17 @@
 <?php
 require_once "connexion.php";
+
+// Récupérer les filières pour le formulaire
+$stmtFiliere = $pdo->query("SELECT * FROM filieres");
+$filieres = $stmtFiliere->fetchAll(PDO::FETCH_ASSOC);
+
 // Récupérer les étudiants avec leur filière (jointure)
-$stmt = $pdo->query("
+$stmtEtudiants = $pdo->query("
     SELECT e.id_etudiant, e.nom, e.prenom, f.nom_filiere
     FROM etudiants e
     INNER JOIN filieres f ON e.id_filiere = f.id_filiere
 ");
-$etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +21,6 @@ $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Ajout étudiant</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<script src="assets/js/script.js"></script>
 <body>
     <div class="form-container">
         <h2>Ajouter un étudiant</h2>
@@ -40,11 +44,13 @@ $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit">Ajouter</button>
         </form>
     </div>
+
     <?php if (isset($_GET['deleted']) && $_GET['deleted'] == 1): ?>
         <p style="color: red; font-weight: bold; text-align:center;">
             Étudiant supprimé avec succès.
         </p>
     <?php endif; ?>
+
     <h2>Liste des étudiants</h2>
     <table>
         <thead>
@@ -70,5 +76,6 @@ $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </tbody>
     </table>
 
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
